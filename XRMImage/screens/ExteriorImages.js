@@ -19,6 +19,7 @@ import ImagePicker from 'react-native-image-picker';
 import {uploadImage} from '../redux/action/FeatureAction';
 import {useNavigation} from '@react-navigation/native';
 import Toast from 'react-native-simple-toast';
+import ImageResizer from 'react-native-image-resizer';
 
 /**
  * @author Devashree Patole
@@ -70,9 +71,13 @@ function ExteriorImages(props) {
     setModal(false);
   };
   const handleImage = (data) => {
-    const options = {};
+    console.log('handleImage');
+    const options = {
+      maxWidth: 500,
+      maxHeight: 500,
+    };
     ImagePicker.launchImageLibrary(options, (response) => {
-      // console.log('res', response);
+      console.log('res', response);
       if (response.uri) {
         if (data === 'front_right_45') {
           setfront_right_45(response);
@@ -92,9 +97,26 @@ function ExteriorImages(props) {
         if (data === 'trunk') {
           settrunk(response);
         }
-        props.uploadImage(props.vin, data, response);
+        let sizeInKb = response.fileSize / 1024;
+        let sizeInMb = sizeInKb / 1024;
+        if (sizeInMb < 10) {
+          props.uploadImage(props.vin, data, response);
+        } else {
+          compressImage(response);
+        }
       }
     });
+  };
+  const compressImage = (response) => {
+    console.log('compress');
+    console.log('response', response.fileSize);
+    ImageResizer.createResizedImage(response.path, 1920, 1080)
+      .then((compressedImage) => {
+        console.log('compressImage', compressedImage);
+      })
+      .catch((err) => {
+        console.log('err', err);
+      });
   };
   const data = [
     {key: 'A'},
@@ -125,7 +147,7 @@ function ExteriorImages(props) {
   const takePicture = async function (camera) {
     const options = {quality: 0.5, base64: true};
     const data = await camera.takePictureAsync(options);
-    // console.log('pic', data);
+    console.log('pic', data);
     setGrid(false);
     if (key === 'front_right_45') {
       setfront_right_45(data);
@@ -450,6 +472,7 @@ function ExteriorImages(props) {
 const mapStateToProps = (state) => {
   return {
     vin: state.featureReducer.vin,
+    isLoading: state.featureReducer.isLoading,
   };
 };
 const mapDispatchToProps = (dispatch) => {

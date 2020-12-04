@@ -4,6 +4,9 @@ import {
   GET_FEATURES_FALIURE,
   UPDATE_FEATURE_LIST,
   VIN_NUMBER,
+  UPLOAD_IMAGE_FALIURE,
+  UPLOAD_IMAGE_REQUEST,
+  UPLOAD_IMAGE_SUCCESS,
 } from './types';
 import axios from 'axios';
 import {baseURL} from '../../shared/config';
@@ -24,6 +27,21 @@ export const getFeaturesFaliure = (error) => {
   return {
     type: GET_FEATURES_SUCCESS,
     payload: error,
+  };
+};
+export const uploadImageRequest = () => {
+  return {
+    type: UPLOAD_IMAGE_REQUEST,
+  };
+};
+export const uploadImageSuccess = () => {
+  return {
+    type: UPLOAD_IMAGE_SUCCESS,
+  };
+};
+export const uploadImageFaliure = () => {
+  return {
+    type: UPLOAD_IMAGE_FALIURE,
   };
 };
 
@@ -61,6 +79,7 @@ export const UpdateVinNumber = (vin) => {
 };
 
 export const uploadImage = (vin, data, response, img) => {
+  console.log('uploadImage');
   return (dispatch) => {
     var formData = new FormData();
     // const image = 'data:image/jpeg;base64,' + response.data;
@@ -82,6 +101,7 @@ export const uploadImage = (vin, data, response, img) => {
         type: 'image/jpeg',
       });
     }
+    dispatch(uploadImageRequest());
     // axios
     //   .put(`${baseURL}/${submitImage}/${vin}`, formData, {
     //     headers: {
@@ -91,10 +111,11 @@ export const uploadImage = (vin, data, response, img) => {
     //   })
     //   .then((response) => {
     //     console.log('response', response);
-    //     Toast.show('Image Saved!!');
+    //     dispatch(uploadImageSuccess());
     //   })
     //   .catch((err) => {
     //     console.log('err', err.response);
+    //     dispatch(uploadImageFaliure());
     //   });
   };
 };

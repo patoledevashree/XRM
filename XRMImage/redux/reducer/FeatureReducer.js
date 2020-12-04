@@ -6,10 +6,11 @@ import {
 
 const initialState = {
   features: [],
-  loading: true,
+  loading: false,
   error: '',
   featureList: [],
   vin: '',
+  isLoading: false,
 };
 
 const FeatureReducer = (state = initialState, action) => {
@@ -47,6 +48,24 @@ const FeatureReducer = (state = initialState, action) => {
       return {
         ...state,
         vin: action.data,
+      };
+    }
+    case 'UPLOAD_IMAGE_REQUEST': {
+      return {
+        ...state,
+        isLoading: true,
+      };
+    }
+    case 'UPLOAD_IMAGE_SUCCESS': {
+      return {
+        ...state,
+        isLoading: false,
+      };
+    }
+    case 'UPLOAD_IMAGE_FALIURE': {
+      return {
+        ...state,
+        isLoading: false,
       };
     }
     default:

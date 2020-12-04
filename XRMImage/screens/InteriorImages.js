@@ -133,27 +133,27 @@ function InteriorImages(props) {
   };
 
   const submitform = () => {
-    // axios
-    //   .post(
-    //     `${baseURL}/${submitForm}/${props.vin}`,
-    //     {
-    //       features: props.featureList,
-    //     },
-    //     {
-    //       headers: {
-    //         'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6',
-    //         'Content-Type': 'application/json',
-    //       },
-    //     },
-    //   )
-    //   .then((response) => {
-    //     console.log('response', response);
-    //     Toast.show('Data Submitted Successfully');
-    //   })
-    //   .catch((err) => {
-    //     console.log('err', err.response);
-    //     Toast.show(err.response.data.message);
-    //   });
+    axios
+      .post(
+        `${baseURL}/${submitForm}/${props.vin}`,
+        {
+          features: props.featureList,
+        },
+        {
+          headers: {
+            'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6',
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then((response) => {
+        console.log('response', response);
+        Toast.show('Data Submitted Successfully');
+      })
+      .catch((err) => {
+        console.log('err', err.response);
+        Toast.show(err.response.data.message);
+      });
   };
 
   return (
@@ -404,6 +404,7 @@ const mapStateToProps = (state) => {
   return {
     vin: state.featureReducer.vin,
     featureList: state.featureReducer.featureList,
+    isLoading: state.featureReducer.isLoading,
   };
 };
 const mapDispatchToProps = (dispatch) => {
