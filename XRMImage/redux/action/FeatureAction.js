@@ -102,20 +102,20 @@ export const uploadImage = (vin, data, response, img) => {
       });
     }
     dispatch(uploadImageRequest());
-    // axios
-    //   .put(`${baseURL}/${submitImage}/${vin}`, formData, {
-    //     headers: {
-    //       'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6',
-    //       'Content-Type': 'multipart/form-data;',
-    //     },
-    //   })
-    //   .then((response) => {
-    //     console.log('response', response);
-    //     dispatch(uploadImageSuccess());
-    //   })
-    //   .catch((err) => {
-    //     console.log('err', err.response);
-    //     dispatch(uploadImageFaliure());
-    //   });
+    axios
+      .put(`${baseURL}/${submitImage}/${vin}`, formData, {
+        headers: {
+          'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6',
+          'Content-Type': 'multipart/form-data;',
+        },
+      })
+      .then((response) => {
+        console.log('response', response);
+        dispatch(uploadImageSuccess());
+      })
+      .catch((err) => {
+        console.log('err', err.response);
+        dispatch(uploadImageFaliure());
+      });
   };
 };

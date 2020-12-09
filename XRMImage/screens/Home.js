@@ -71,7 +71,7 @@ function Home(props) {
         setPbs(true);
       })
       .catch((err) => {
-        // console.log('err', err.response);
+        console.log('err', err.response);
         if (err.response.data.errorCode) {
           Toast.show(err.response.data.message);
         } else if (err.response.data.message) {
@@ -86,29 +86,36 @@ function Home(props) {
 
   const onSuccess = (e) => {
     let file = e;
-    // console.log('file', file);
-    setScan(false);
+    console.log('file', file);
+
+    // if (file[0].type === 'UNKNOWN_FORMAT') {
+    //   setResult({});
+    //   setVehicleInfo({});
+    //   setScan(false);
+    //   Toast.show('Scan Failed!!!');
+    // } else {
     setResult({});
     setVehicleInfo({});
-
+    setScan(false);
     axios
-      .get(`${baseURL}/${getVehicleVin}/${file[0].data}`, {
+      .get(`${baseURL}/${getVehicleVin}/${file.data}`, {
         headers: {'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6'},
       })
       .then((res) => {
-        // console.log('response', res);
-
+        console.log('response', res);
+        props.UpdateVinNumber(file.data);
         setPbs(true);
       })
       .catch((err) => {
-        // console.log('err', err.response);
+        console.log('err', err.response);
         if (err.response.data.message[0].message) {
           Toast.show(err.response.data.message[0].message);
         } else {
-          getVehicleInfoFromVinApi(file[0].data);
+          getVehicleInfoFromVinApi(file.data);
         }
         setPbs(false);
       });
+    // }
   };
   const getVehicleInfoFromVinApi = (vinNumber) => {
     // console.log('vin', vinNumber);
@@ -129,6 +136,7 @@ function Home(props) {
             },
           };
           let vin = res.data.Results[0].VIN;
+          console.log('vin', vin);
           props.UpdateVinNumber(vin);
 
           setVehicleInfo(tempVehicleInfo);
@@ -145,8 +153,63 @@ function Home(props) {
   const handleClick = () => {
     navigation.navigate('Features');
   };
+  const openScanner = () => {
+    setScan(false);
+    console.log('close');
+  };
+  // const barCodeDetect = ({barcodes}) => {
+  //   onSuccess(barcodes);
+  // };
   return (
     <View style={{flex: 1}}>
+      {scan == true ? (
+        <RNCamera
+          // ref={(ref) => (this.camera = ref)}
+          defaultTouchToFocus
+          type={RNCamera.Constants.Type.back}
+          flashMode={camera.flashMode}
+          permissionDialogTitle={'Permission to use camera'}
+          permissionDialogMessage={
+            'We need your permission to use your camera phone'
+          }
+          type={camera.type}
+          onBarCodeRead={onSuccess}
+          // onGoogleVisionBarcodesDetected={barCodeDetect}
+          googleVisionBarcodeMode={
+            RNCamera.Constants.GoogleVisionBarcodeDetection.BarcodeMode
+              .ALTERNATE
+          }
+          // camera1ScanMode="boost"
+          onFocusChanged={(e) => {
+            // console.log('focus', e);
+          }}
+          onZoomChanged={(e) => {
+            // console.log('zoom', e);
+          }}
+          // aspect={RNCamera.Constants.Aspect.stretch}
+          focusDepth={0.9}
+          style={{
+            height: '100%',
+            width: '100%',
+          }}>
+          <FontAwesome
+            name="times"
+            size={30}
+            color={'white'}
+            style={{padding: 20, right: 0, position: 'absolute', zIndex: 1}}
+            onPress={() => {
+              openScanner();
+            }}
+          />
+
+          <BarcodeMask
+            height={'50%'}
+            width={'90%'}
+            showAnimatedLine={true}
+            backgroundColor={'rgba(0, 0, 0, 0)'}
+          />
+        </RNCamera>
+      ) : null}
       <Headers />
       <KeyboardAvoidingView behavior={'height'}>
         <TouchableWithoutFeedback
@@ -499,46 +562,6 @@ function Home(props) {
       ) : (
         <Footer onClick={handleClick} />
       )}
-      {scan == true ? (
-        <View style={{flex: 1}}>
-          <RNCamera
-            // ref={(ref) => (this.camera = ref)}
-            defaultTouchToFocus
-            type={RNCamera.Constants.Type.back}
-            flashMode={camera.flashMode}
-            permissionDialogTitle={'Permission to use camera'}
-            permissionDialogMessage={
-              'We need your permission to use your camera phone'
-            }
-            type={camera.type}
-            // onBarCodeRead={onSuccess}
-            onGoogleVisionBarcodesDetected={({barcodes}) => {
-              // console.log('barcodes', barcodes);
-              onSuccess(barcodes);
-            }}
-            googleVisionBarcodeMode={
-              RNCamera.Constants.GoogleVisionBarcodeDetection.BarcodeMode
-                .ALTERNATE
-            }
-            camera1ScanMode="boost"
-            onFocusChanged={(e) => {
-              // console.log('focus', e);
-            }}
-            onZoomChanged={(e) => {
-              // console.log('zoom', e);
-            }}
-            // aspect={RNCamera.Constants.Aspect.stretch}
-            focusDepth={0.9}
-            style={{height: '50%', width: '100%'}}>
-            <BarcodeMask
-              height={'70%'}
-              width={'90%'}
-              showAnimatedLine={true}
-              backgroundColor={'rgba(0, 0, 0, 0)'}
-            />
-          </RNCamera>
-        </View>
-      ) : null}
     </View>
   );
 }

@@ -112,9 +112,8 @@ function InteriorImages(props) {
     return data;
   };
   const takePicture = async function (camera) {
-    const options = {quality: 0.5, base64: true};
+    const options = {quality: 0.5, base64: true, width: 500, height: 500};
     const data = await camera.takePictureAsync(options);
-    //  eslint-disable-next-line
     // console.log('pic', data);
     setGrid(false);
     if (key === 'dash_view_from_rear_seat') {

@@ -43,14 +43,14 @@ function ExteriorImages(props) {
 
   const handleClick = () => {
     if (
-      front_right_45 === '' ||
+      front_left_45 === '' ||
+      front_left_45 === '' ||
       rear_right_45 === '' ||
       rear_left_45 === '' ||
-      front_left_45 === '' ||
       full_driver_side_view === '' ||
       trunk === ''
     ) {
-      Toast.show('Upload Images First');
+      Toast.show('Upload Images first');
     } else {
       navigation.navigate('InteriorImages');
     }
@@ -145,7 +145,7 @@ function ExteriorImages(props) {
     return data;
   };
   const takePicture = async function (camera) {
-    const options = {quality: 0.5, base64: true};
+    const options = {quality: 0.5, base64: true, height: 500, width: 500};
     const data = await camera.takePictureAsync(options);
     console.log('pic', data);
     setGrid(false);
